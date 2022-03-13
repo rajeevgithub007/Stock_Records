@@ -2,8 +2,6 @@ __pycache__
 .idea
 .runNumber
 *.pyc
-tests/.env.sh
-tests/env.sh
 var/*
 !var/README.md
 .DS_Store

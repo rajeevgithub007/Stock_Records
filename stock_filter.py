@@ -78,17 +78,17 @@ def get_file_records_12(filename):
 def get_filtered_records(filename):
     """Get the resultant list of dictionaries in expected format."""
     try:
-        filtered_lst = []
+        filtered_joined_lst = []
         lst_dict_8 = get_file_records_12(filename)
         lst_dict_12 = get_file_records_8(filename)
 
         for item in lst_dict_12:
-            filtered_lst.extend([dict(zip(['ISIN', 'Currency', 'side_', 'quantity_', 'price_', 'price_per_unit'],
+            filtered_joined_lst.extend([dict(zip(['ISIN', 'Currency', 'side_', 'quantity_', 'price_', 'price_per_unit'],
                                           [item['isin_'], item['currency_'], x['side_'], x['quantity_'],
                                            x['price_'], x['price_'] / x['quantity_']]))
                                  for x in lst_dict_8 if x['securityId_'] == item['securityId_']])
-        result = get_resultant_lst(filtered_lst)
-        return result
+        resultant_aggregated_lst = get_resultant_lst(filtered_joined_lst)
+        return resultant_aggregated_lst
     except Exception as ex:
         output_json = dict(zip(['Message', 'Payload'],
                                [f'Encountered exception in reading contents of files : {ex} ',
@@ -101,7 +101,7 @@ def get_resultant_lst(lst):
     try:
         result_count = get_total_buy_sell_count(lst)
         result_max_min = get_max_min_buy_sell_price(lst)
-        result_price = get_total_buy_sale_price(lst)
+        result_price = get_total_buy_sell_price(lst)
         result_quantity = get_total_buy_sell_quantity(lst)
 
         comp_buy_count = [{'ISINCurrencyside_': f"{d['ISIN']}|{d['Currency']}|{d['side_']}",
@@ -144,14 +144,30 @@ def get_resultant_lst(lst):
             if 'SELL' in d['ISINCurrencyside_']:
                 del d['Total Sell Price']
 
+        default_dict = defaultdict(dict)
         for d in res_lst:
-            key_list = ['ISIN', 'Currency', 'side_']
-            d['ISINCurrencyside_'] = d['ISINCurrencyside_'].split('|')
-            d[key_list[0]] = d['ISINCurrencyside_'][0]
-            d[key_list[1]] = d['ISINCurrencyside_'][1]
-            # d[key_list[2]] = d['ISINCurrencyside_'][2]
-            del d['ISINCurrencyside_']
-        return res_lst
+            key_list = ['ISINCurrency']
+            if 'BUY' in d['ISINCurrencyside_']:
+                d['ISINCurrencyside_'] = d['ISINCurrencyside_'][:-4]
+                d[key_list[0]] = d['ISINCurrencyside_']
+                del d['ISINCurrencyside_']
+            elif 'SELL' in d['ISINCurrencyside_']:
+                d['ISINCurrencyside_'] = d['ISINCurrencyside_'][:-5]
+                d[key_list[0]] = d['ISINCurrencyside_']
+                del d['ISINCurrencyside_']
+
+        for item in res_lst:
+            default_dict[item['ISINCurrency']].update(item)
+        resultant_isin_curr_lst = list(default_dict.values())
+
+        for d in resultant_isin_curr_lst:
+            key_list = ['ISIN', 'Currency']
+            d['ISINCurrency'] = d['ISINCurrency'].split('|')
+            d[key_list[0]] = d['ISINCurrency'][0]
+            d[key_list[1]] = d['ISINCurrency'][1]
+            del d['ISINCurrency']
+
+        return resultant_isin_curr_lst
     except Exception as ex:
         output_json = dict(zip(['Message', 'Payload'],
                                [f'Encountered exception in reading contents of files : {ex} ', None]))
@@ -159,7 +175,7 @@ def get_resultant_lst(lst):
 
 
 def get_total_buy_sell_count(lst):
-    """Get the total buy count and total sale count for selected stock records."""
+    """Get the total buy count and total sell count for selected stock records."""
     try:
         grouper = itemgetter('ISIN', 'Currency', 'side_')
         result_count = []
@@ -185,7 +201,7 @@ def get_total_buy_sell_count(lst):
 
 
 def get_total_buy_sell_quantity(lst):
-    """Get the total buy quantity and total sale quantity for selected stock records."""
+    """Get the total buy quantity and total sell quantity for selected stock records."""
     try:
         grouper = itemgetter('ISIN', 'Currency', 'side_')
 
@@ -208,7 +224,7 @@ def get_total_buy_sell_quantity(lst):
 
 
 def get_max_min_buy_sell_price(lst):
-    """Get the Maximum buy price and Minimum sale price for selected stock records."""
+    """Get the Maximum buy price and Minimum sell price for selected stock records."""
     try:
         grouper = itemgetter('ISIN', 'Currency', 'side_')
         result = []
@@ -230,8 +246,8 @@ def get_max_min_buy_sell_price(lst):
         return output_json
 
 
-def get_total_buy_sale_price(lst):
-    """Get the total buy price and total sale price for selected stock records."""
+def get_total_buy_sell_price(lst):
+    """Get the total buy price and total sell price for selected stock records."""
     try:
         grouper = itemgetter('ISIN', 'Currency', 'side_')
         result = []

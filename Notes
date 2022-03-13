@@ -1,0 +1,3 @@
+Create knownErrors File:
+-----------------------
+flake8 >> mypy >> pylint >> .knownErrors

@@ -1,0 +1,45 @@
+[pylint]
+--disable=line-too-long,too-few-public-methods,too-many-arguments,logger,C0103,W0703,R0201,E0402
+[MASTER]
+
+disable=
+    duplicate-code,
+    line-too-long,
+    too-few-public-methods,
+    too-many-arguments,
+
+[FORMAT]
+
+good-names=
+    a,
+    b,
+    c,
+    d,
+    e,
+    ex,
+    f,
+    g,
+    h,
+    i,
+    j,
+    k,
+    l,
+    logger,
+    m,
+    n,
+    o,
+    p,
+    q,
+    r,
+    s,
+    t,
+    u,
+    v,
+    w,
+    x,
+    y,
+    z
+
+[TYPECHECK]
+
+ignored-modules = pyminzip

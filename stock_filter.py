@@ -256,7 +256,7 @@ def get_total_buy_sale_price(lst):
 
 
 def export_to_tsv(filename, tsv_file):
-    """ Export the resultant list of dictionaries in tabular format."""
+    """Export the resultant list of dictionaries in tabular format."""
     try:
         dir_name = os.path.dirname(os.path.abspath(__file__))
         stock_filename = os.path.join(dir_name, filename)

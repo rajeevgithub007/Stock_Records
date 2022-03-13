@@ -278,4 +278,5 @@ def export_to_tsv(filename, tsv_file):
 
 
 if __name__ == '__main__':
+    """Call tsv function to export result of list of records to tsv sheet."""
     export_to_tsv('stock_records', 'TSVFile.tsv')

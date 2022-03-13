@@ -1,10 +1,10 @@
 #####################################
 Problem Statement:
 __________________
-Exchange transactions are available in the form of a text file with each transaction as a strigigfied version of a json object
-We need to read this file, identify the records that signify any particular security and records that signify transactions on any given security
-Refine the data to extract information in a usable fashion
-Analyze and process the refined data to identify  Total Sell Count, Total Sell Quantity, Max Buy Price, Min Sell Price, and Weighted Average Sell Price
+Exchange transactions are available in the form of a text file with each transaction as a stringified version of a json object.
+We need to read this file, identify the records that signify any particular security and records that signify transactions on any given security.
+Refine the data to extract information in a usable fashion.
+Analyze and process the refined data to identify  Total Sell Count, Total Sell Quantity, Max Buy Price, Min Sell Price, and Weighted Average Sell Price.
 
 #####################################
 
